@@ -1,44 +1,15 @@
 
 import { Pill, Clock, AlertTriangle, Trash2, Edit } from "lucide-react";
+import { getDaysRemaining, getPrescriptionStatus, getStatusColor, getStatusText } from "../utils/prescriptionUtils";
 
-const PrescriptionCard = ({ prescription, onEdit, onDelete, showActions = true }) => {
-  const getDaysRemaining = (endDate) => {
-    const today = new Date();
-    const end = new Date(endDate);
-    const diffTime = end.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
+interface PrescriptionCardProps {
+  prescription: any;
+  onEdit?: (prescription: any) => void;
+  onDelete: (id: number) => void;
+  showActions?: boolean;
+}
 
-  const getPrescriptionStatus = (prescription) => {
-    const daysRemaining = getDaysRemaining(prescription.endDate);
-    if (daysRemaining < 0) return "expired";
-    if (daysRemaining <= 7) return "expiring";
-    return "active";
-  };
-
-  const getStatusColor = (prescription) => {
-    const status = getPrescriptionStatus(prescription);
-    switch (status) {
-      case "active": return "status-active";
-      case "expiring": return "status-badge bg-yellow-100 text-yellow-800";
-      case "expired": return "status-expired";
-      default: return "status-active";
-    }
-  };
-
-  const getStatusText = (prescription) => {
-    const status = getPrescriptionStatus(prescription);
-    const daysRemaining = getDaysRemaining(prescription.endDate);
-    
-    switch (status) {
-      case "active": return "Active";
-      case "expiring": return `${daysRemaining} days left`;
-      case "expired": return "Expired";
-      default: return "Active";
-    }
-  };
-
+const PrescriptionCard = ({ prescription, onEdit, onDelete, showActions = true }: PrescriptionCardProps) => {
   const daysRemaining = getDaysRemaining(prescription.endDate);
   const status = getPrescriptionStatus(prescription);
 
